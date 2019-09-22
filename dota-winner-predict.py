@@ -1,5 +1,6 @@
 import pandas
 import numpy as np
+from sklearn.model_selection import KFold
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import roc_auc_score
 
@@ -11,7 +12,7 @@ nan_count = X_train.isnull().sum()
 nan_count = nan_count[nan_count != 0]
 print('Признаки с пропусками (NaN) |  Количество пропусков')
 print(nan_count)
-
+print('Заменим все пропущенные значения на нули')
 X_train.fillna(inplace=True, value=0)
 
 print('Столбец с целевой переменной - radiant_win')
@@ -19,6 +20,9 @@ print('Столбец с целевой переменной - radiant_win')
 data_test = pandas.read_csv('features_test.csv', index_col='match_id')
 X_test = data_test.loc[:, 'start_time':'dire_first_ward_time']
 X_test.fillna(inplace=True, value=0)
+
+# количество деревьев 10, 20, 30
+kf = KFold(n_splits=5, random_state=1, shuffle=True)
 
 gbm = GradientBoostingClassifier(n_estimators=250, verbose=True,
                                  random_state=241, learning_rate=lr)
