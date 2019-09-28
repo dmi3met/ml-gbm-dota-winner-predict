@@ -24,11 +24,10 @@ gbm = GradientBoostingClassifier(n_estimators=250, verbose=True,
                                  random_state=241)
 
 kf = KFold(n_splits=5, random_state=1, shuffle=True)
-print(X[1,:])
+#print(X[1,:])
 for train, test in kf.split(X):
-    print(X[train])
-    X_train, X_test = X[train], X[test]
-    y_train, y_test = y[train], y[test]
+    X_train, X_test = X.iloc[train], X.iloc[test]
+    y_train, y_test = y.iloc[train], y.iloc[test]
 gbm.fit(X_train, y_train)
 
 
