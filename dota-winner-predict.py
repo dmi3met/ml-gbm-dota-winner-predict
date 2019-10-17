@@ -19,17 +19,22 @@ print('Столбец с целевой переменной - radiant_win')
 
 # todo: количество деревьев 10, 20, 30
 
-
-gbm = GradientBoostingClassifier(n_estimators=250, verbose=True,
+# n_estimators = 10,20,30 - количество деревьев
+gbm = GradientBoostingClassifier(n_estimators=10, verbose=True,
                                  random_state=241)
+splits = 5
+kf = KFold(n_splits=splits, random_state=1, shuffle=True)
 
-kf = KFold(n_splits=5, random_state=1, shuffle=True)
-#print(X[1,:])
+
+gbm_score = 0
 for train, test in kf.split(X):
     X_train, X_test = X.iloc[train], X.iloc[test]
     y_train, y_test = y.iloc[train], y.iloc[test]
-gbm.fit(X_train, y_train)
-
+    gbm.fit(X_train, y_train)
+    pred = gbm.predict_proba(X_test)[:, 1]
+    gbm_score += roc_auc_score(y_test, pred)
+    print(gbm_score)
+print(gbm_score/splits)
 
 '''
 data_test = pandas.read_csv('features_test.csv', index_col='match_id')
